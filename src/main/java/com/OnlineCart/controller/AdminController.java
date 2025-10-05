@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -38,8 +39,9 @@ public class AdminController {
     }
 
     @GetMapping("/category")
-    public String category()
+    public String category(Model model)
     {
+        model.addAttribute("categorys",categoryService.getAllCategory());
         return "categorey";
     }
 
@@ -71,6 +73,22 @@ public class AdminController {
                 redirectAttributes.addFlashAttribute("successMsg", "Saved successfully");
             }
         }
+        return "redirect:/admin/category";
+    }
+
+    @GetMapping("/deleteCategory/{id}")
+    public String deleteCategory(@PathVariable int id,RedirectAttributes session)
+    {
+        Boolean deleteCategory = categoryService.deleteCategory(id);
+
+        if(deleteCategory)
+        {
+            session.addFlashAttribute("successMsg","category delete successfully");
+        }
+        else{
+            session.addFlashAttribute("errorMsg","something went wrong");
+        }
+
         return "redirect:/admin/category";
     }
 

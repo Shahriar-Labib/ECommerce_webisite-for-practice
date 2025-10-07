@@ -14,9 +14,26 @@
         <div class="row">
             <div class="col-md-7 offset-md-3">
                 <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-                    <div class="card-header text-center fs-4"> Add Product </div>
+                    <div class="card-header text-center fs-4"> <p class="fs-4">Add Product</p>
+                        <th:block th:if="${successMsg}">
+                            <p class="text-success fw-bold">
+                                [[${successMsg}]]
+                            </p>
+                            <!-- Fix: Call removeSessionMessage() as a method -->
+                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                        </th:block>
+
+                        <th:block th:if="${errorMsg}">
+                            <p class="text-danger fw-bold">
+                                [[${errorMsg}]]
+                            </p>
+                            <!-- Fix: Call removeSessionMessage() as a method -->
+                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                        </th:block>
+
+                    </div>
                     <div class="card-body">
-                        <form action="">
+                        <form action="/admin/saveProduct" method="post" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label >Enter Title</label>
                                 <input type="text" name="title" class="form-control">
@@ -25,36 +42,36 @@
 
                             <div class="mb-3">
                                 <label >Enter Description</label>
-                                <textarea rows="3"  type="text" name="description" class="form-control"></textarea>
+                                <textarea rows="3" name="description"  type="text" class="form-control"></textarea>
 
                             </div>
 
                             <div class="mb-3 mt-3">
                                 <label >Category</label>
-                                <select class="form-control">
+                                <select class="form-control" name="category">
                                     <option value="" >
                                         ---select---
                                     </option>
-                                    <option value="">Electronics</option>
+                                    <option th:each="c:${categories}">[[${c.name}]]</option>
                                 </select>
 
                             </div>
 
                             <div class="mb-3">
                                 <label >Enter Price</label>
-                                <input type="text" name="title" class="form-control">
+                                <input type="number" name="price" class="form-control">
 
                             </div>
                             <div class="row">
                                 <div class="mb-3 col">
                                     <label >Enter Stock</label>
-                                    <input type="text" name="title" class="form-control">
+                                    <input type="text" name="stock" class="form-control">
 
                                 </div>
 
                                 <div class="mb-3 col">
                                     <label >Upload Image</label>
-                                    <input type="file" name="title" class="form-control">
+                                    <input type="file" name="file" class="form-control">
 
                                 </div>
 

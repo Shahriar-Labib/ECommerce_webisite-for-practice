@@ -1,0 +1,26 @@
+package com.OnlineCart.model;
+
+import jakarta.persistence.*;
+import lombok.Data;
+
+@Entity
+@Data
+public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(length = 500)
+    private String title;
+
+    @Column(length = 5000)
+    private String description;
+
+    private Double price;
+
+    private String category;
+
+    private int stock;
+    private String image;
+}

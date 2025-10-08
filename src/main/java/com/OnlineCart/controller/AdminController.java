@@ -180,6 +180,37 @@ public class AdminController {
     }
 
 
+    @GetMapping("/products")
+    public String viewProduct(Model model)
+    {
+        model.addAttribute("products",productService.getAllProduct());
+        return "products_page";
+    }
+
+    @GetMapping("/deleteProduct/{id}")
+    public String deleteProduct(@PathVariable int id,RedirectAttributes session)
+    {
+        Boolean deleteProduct = productService.deleteProduct(id);
+
+        if(deleteProduct)
+        {
+            session.addFlashAttribute("successMsg","Product delete successfully");
+        }
+        else{
+            session.addFlashAttribute("errorMsg","Something is wrong in the server");
+        }
+        return "redirect:/admin/products";
+    }
+
+    @GetMapping("/editproduct/{id}")
+    public String editProduct(@PathVariable int id,Model model)
+    {
+        model.addAttribute("product",productService.getProductById(id));
+        model.addAttribute("categories",categoryService.getAllCategory());
+        return "edit_product";
+    }
+
+
 
 
 }

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base::layout(~{::section})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>View Products</title>
+</head>
+
+<body>
+<section>
+    <div class="container mt-5 p-5">
+        <div class="card shadow-sm">
+            <div class="card-header text-center">
+                <p class="fs-4">View Product</p>
+                <th:block th:if="${successMsg}">
+                    <p class="text-success fw-bold">
+                        [[${successMsg}]]
+                    </p>
+                    <!-- Fix: Call removeSessionMessage() as a method -->
+                    <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                </th:block>
+
+                <th:block th:if="${errorMsg}">
+                    <p class="text-danger fw-bold">
+                        [[${errorMsg}]]
+                    </p>
+                    <!-- Fix: Call removeSessionMessage() as a method -->
+                    <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                </th:block>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                    <tr>
+                        <th scope="col">Sl No</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Stock</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="p,c:${products}">
+                        <th scope="row">[[${c.count}]]</th>
+                        <td>
+                            <img th:src="@{'/img/product_img/' + ${p.image}}" alt="Product Image"
+                                 style="width: 50px; height: 50px; border-radius: 50%;">
+                        </td>
+                        <td>[[${p.title}]]</td>
+                        <td>[[${p.category}]]</td>
+                        <td>[[${p.price}]]</td>
+                        <td>[[${p.stock}]]</td>
+                        <td>
+                            <a th:href="@{'/admin/editproduct/' + ${p.id}}" class="btn btn-sm btn-primary">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a th:href="@{'/admin/deleteProduct/' + ${p.id}}" class="btn btn-sm btn-danger">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                    <!-- You can repeat or loop this with Thymeleaf -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

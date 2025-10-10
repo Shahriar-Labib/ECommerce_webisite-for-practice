@@ -1,10 +1,25 @@
 package com.OnlineCart.controller;
 
+import com.OnlineCart.model.Category;
+import com.OnlineCart.model.Product;
+import com.OnlineCart.repository.ProductRepository;
+import com.OnlineCart.service.CategoryService;
+import com.OnlineCart.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.List;
 
 @Controller
 public class HomeController {
+
+    @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
+    private ProductService productService;
 
     @GetMapping("/")
     public String index(){
@@ -24,8 +39,13 @@ public class HomeController {
     }
 
     @GetMapping("/products")
-    public String products()
+    public String products(Model model)
     {
+        List<Category> categories = categoryService.getAllActiveCategory();
+        List<Product> products = productService.getAllActiveProducts();
+
+        model.addAttribute("categories",categories);
+        model.addAttribute("products",products);
         return "products";
     }
 

@@ -158,6 +158,8 @@ public class AdminController {
     {
         String imageName = image.isEmpty() ? "default.jpg" : image.getOriginalFilename();
         product.setImage(imageName);
+        product.setDiscount(0);
+        product.setDiscountPrice(product.getPrice());
 
         Product saveProduct = productService.saveProduct(product);
 
@@ -202,13 +204,40 @@ public class AdminController {
         return "redirect:/admin/products";
     }
 
-    @GetMapping("/editproduct/{id}")
+    @GetMapping("/editProduct/{id}")
     public String editProduct(@PathVariable int id,Model model)
     {
         model.addAttribute("product",productService.getProductById(id));
         model.addAttribute("categories",categoryService.getAllCategory());
         return "edit_product";
     }
+@PostMapping("/updateProduct")
+public String updateProduct(Model model,
+                            @RequestParam("file") MultipartFile image,
+                            @ModelAttribute Product product,
+                            RedirectAttributes session) throws IOException {
+
+        Double check  = product.getDiscountPrice();
+if(product.getDiscount() < 0 || product.getDiscount() > 100)
+{
+    session.addFlashAttribute("errorMsg", "Invalid discount price");
+}
+else{
+    Product updated = productService.updateProduct(product, image);
+
+    if (!ObjectUtils.isEmpty(updated)) {
+        // service handles file saving now — only show feedback here
+        session.addFlashAttribute("successMsg", "Product updated successfully");
+    } else {
+        session.addFlashAttribute("errorMsg", "Something is wrong in the server");
+    }
+}
+
+
+
+
+    return "redirect:/admin/editProduct/" + product.getId();
+}
 
 
 

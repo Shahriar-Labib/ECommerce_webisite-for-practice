@@ -127,9 +127,17 @@ public Product updateProduct(Product product, MultipartFile image) throws IOExce
 }
 
     @Override
-    public List<Product> getAllActiveProducts() {
+    public List<Product> getAllActiveProducts(String category) {
 
-        List<Product> products = productRepository.findByIsActiveTrue();
+        List<Product> products = null;
+        if(ObjectUtils.isEmpty(category))
+        {
+            products = productRepository.findByIsActiveTrue();
+        }
+        else {
+           products = productRepository.findByCategory(category);
+        }
+
         return products;
     }
 }

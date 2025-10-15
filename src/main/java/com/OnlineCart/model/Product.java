@@ -22,6 +22,7 @@ public class Product {
     private String category;
 
     private int stock;
+
     private String image;
 
     private int discount;

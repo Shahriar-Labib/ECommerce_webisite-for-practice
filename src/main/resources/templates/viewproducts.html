@@ -63,25 +63,33 @@
 
                         <!-- Product Details -->
                         <div class="col-md-7">
-                            <h3>Laptop</h3>
-                            <p class="text-muted">Hp Laptop, 256Gb SSD</p>
+                            <h3>[[${product.title}]]</h3>
+                            <p class="text-muted">[[${product.description}]]</p>
 
                             <div class="mb-3">
                                 <strong>Status:</strong>
-                                <span class="badge bg-success me-2">Available</span>
-                                <span class="badge bg-warning text-dark">Out of stock</span>
+                                <th:block th:if="${product.stock>0}">
+                                    <span class="badge bg-success me-2">Available</span>
+                                </th:block>
+
+                                <th:block th:if="${product.stock<=0}">
+                                    <span class="badge bg-warning text-dark">Out of stock</span>
+                                </th:block>
+
+
+
                             </div>
 
                             <div class="mb-3">
-                                <strong>Category:</strong> Laptop <br>
+                                <strong>Category:</strong> [[${product.category}]] <br>
                                 <strong>Policy:</strong> 7 Days Replacement & Return
                             </div>
 
                             <div class="mb-4">
                                 <h4 class="text-danger fw-bold mb-1">
-                                    Rs 7000
-                                    <small class="text-muted text-decoration-line-through">Rs 14000</small>
-                                    <span class="badge bg-success">50% off</span>
+                                    Rs [[${product.discountPrice}]]
+                                    <small class="text-muted text-decoration-line-through">Rs [[${product.price}]]</small>
+                                    <span class="badge bg-success">[[${product.discount}]]% off</span>
                                 </h4>
                             </div>
 
@@ -102,7 +110,16 @@
                             </div>
 
                             <!-- Add to Cart Button -->
-                            <button class="btn btn-danger btn-lg w-100">Add To Cart</button>
+
+
+                            <th:block th:if="${product.stock > 0}">
+                                <a class="btn btn-danger btn-lg col-md-12">Add To Cart</a>
+                            </th:block>
+
+                            <th:block th:if="${product.stock <= 0}">
+                                <a class="btn btn-warning text-white btn-lg col-md-12">Out Of Stock</a>
+                            </th:block>
+
                         </div>
 
                     </div>

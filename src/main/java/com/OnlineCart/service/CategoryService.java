@@ -1,9 +1,11 @@
 package com.OnlineCart.service;
 
 import com.OnlineCart.model.Category;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public interface CategoryService {
 
     public Category saveCategory(Category category);

@@ -53,58 +53,85 @@
                 <div class="card shadow bg-body-tertiary p-4">
                     <div class="card-header bg-white border-0">
                         <h4 class="text-center">Register</h4>
+                        <th:block th:if="${successMsg}">
+                            <p class="text-success fw-bold">
+                                [[${successMsg}]]
+                            </p>
+                            <!-- Fix: Call removeSessionMessage() as a method -->
+                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                        </th:block>
+
+                        <th:block th:if="${errorMsg}">
+                            <p class="text-danger fw-bold">
+                                [[${errorMsg}]]
+                            </p>
+                            <!-- Fix: Call removeSessionMessage() as a method -->
+                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                        </th:block>
                     </div>
 
                     <div class="card-body">
-                        <form action="#" method="post" enctype="multipart/form-data">
+                        <form action="/saveUser" method="post" enctype="multipart/form-data">
+
+<!--                            <div class="row">-->
+<!--                                <div class="mb-3 col-md-6 input-group">-->
+<!--                                    <input type="text"  name="name" class="form-control" placeholder="Full Name" required>-->
+<!--                                    <i class="bi bi-person form-control-icon"></i>-->
+<!--                                </div>-->
+<!--                                <div class="mb-3 col-md-6 input-group">-->
+<!--                                    <input type="text"  name="mobileNumber" class="form-control" placeholder="Mobile Number" required>-->
+<!--                                    <i class="bi bi-phone form-control-icon"></i>-->
+<!--                                </div>-->
+<!--                            </div>-->
+
+
                             <div class="row">
-                                <div class="mb-3 col-md-6 input-group">
-                                    <input type="text" name="name" class="form-control" placeholder="Full Name" required>
-                                    <i class="bi bi-person form-control-icon"></i>
+                                <div class="mb-3 col-md-6">
+                                    <input type="text"  name="name" class="form-control" placeholder="Full Name" required>
                                 </div>
-                                <div class="mb-3 col-md-6 input-group">
-                                    <input type="text" name="mobile" class="form-control" placeholder="Mobile Number" required>
-                                    <i class="bi bi-phone form-control-icon"></i>
+                                <div class="mb-3 col-md-6">
+                                    <input type="number"  name="mobile" class="form-control" placeholder="Mobile Number" required>
                                 </div>
                             </div>
 
+
                             <div class="mb-3 input-group">
-                                <input type="email" name="email" class="form-control" placeholder="Email" required>
+                                <input type="email"  name="email" class="form-control" placeholder="Email" required>
                                 <i class="bi bi-envelope form-control-icon"></i>
                             </div>
 
                             <div class="row">
                                 <div class="mb-3 col-md-6">
-                                    <input type="text" name="address" class="form-control" placeholder="Address" required>
+                                    <input type="text"  name="address" class="form-control" placeholder="Address" required>
                                 </div>
                                 <div class="mb-3 col-md-6">
-                                    <input type="text" name="city" class="form-control" placeholder="City" required>
+                                    <input type="text"  name="city" class="form-control" placeholder="City" required>
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="mb-3 col-md-6">
-                                    <input type="text" name="state" class="form-control" placeholder="State" required>
+                                    <input type="text"  name="state" class="form-control" placeholder="State" required>
                                 </div>
                                 <div class="mb-3 col-md-6">
-                                    <input type="text" name="pincode" class="form-control" placeholder="Pincode" required>
+                                    <input type="text"  name="pincode" class="form-control" placeholder="Pincode" required>
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="mb-3 col-md-6 input-group">
-                                    <input type="password" name="password" class="form-control" placeholder="Password" required>
+                                    <input type="password"  name="password" class="form-control" placeholder="Password" required>
                                     <i class="bi bi-lock form-control-icon"></i>
                                 </div>
                                 <div class="mb-3 col-md-6 input-group">
-                                    <input type="password" name="confirmPassword" class="form-control" placeholder="Confirm Password" required>
+                                    <input type="password"  name="cpassword" class="form-control" placeholder="Confirm Password" required>
                                     <i class="bi bi-lock form-control-icon"></i>
                                 </div>
                             </div>
 
                             <div class="mb-3">
                                 <label for="profile" class="form-label">Profile Image</label>
-                                <input type="file" class="form-control" id="profile" name="image">
+                                <input type="file"  class="form-control" id="profile" name="img">
                             </div>
 
                             <div class="d-grid">

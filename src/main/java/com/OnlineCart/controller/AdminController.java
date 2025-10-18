@@ -2,8 +2,10 @@ package com.OnlineCart.controller;
 
 import com.OnlineCart.model.Category;
 import com.OnlineCart.model.Product;
+import com.OnlineCart.model.UserDatas;
 import com.OnlineCart.service.CategoryService;
 import com.OnlineCart.service.ProductService;
+import com.OnlineCart.service.UserDetailsService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -20,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -31,6 +34,27 @@ public class AdminController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @ModelAttribute
+    public void getUserDetails(Principal principal, Model model)
+    {
+        if(principal != null)
+        {
+            String email = principal.getName();
+            UserDatas userDatas = userDetailsService.getUserByEmail(email);
+
+            model.addAttribute("user",userDatas);
+        }
+
+        List<Category> getAllActiveCategories = categoryService.getAllActiveCategory();
+        model.addAttribute("categorys",getAllActiveCategories);
+
+
+
+    }
 
     @GetMapping("/")
     public String index()

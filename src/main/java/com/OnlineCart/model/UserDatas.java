@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Entity
 @Data
-public class UserDetails {
+public class UserDatas {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,4 +31,6 @@ public class UserDetails {
     private String password;
 
     private String profileImage;
+
+    private String role;
 }

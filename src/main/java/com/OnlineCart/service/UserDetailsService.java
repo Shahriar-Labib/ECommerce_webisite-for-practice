@@ -1,8 +1,10 @@
 package com.OnlineCart.service;
 
-import com.OnlineCart.model.UserDetails;
+import com.OnlineCart.model.UserDatas;
 
 public interface UserDetailsService {
 
-    public UserDetails saveUser(UserDetails user);
+    public UserDatas saveUser(UserDatas user);
+
+    public UserDatas getUserByEmail(String email);
 }

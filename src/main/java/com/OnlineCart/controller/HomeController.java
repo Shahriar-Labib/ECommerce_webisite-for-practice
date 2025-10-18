@@ -2,8 +2,7 @@ package com.OnlineCart.controller;
 
 import com.OnlineCart.model.Category;
 import com.OnlineCart.model.Product;
-import com.OnlineCart.model.UserDetails;
-import com.OnlineCart.repository.ProductRepository;
+import com.OnlineCart.model.UserDatas;
 import com.OnlineCart.service.CategoryService;
 import com.OnlineCart.service.ProductService;
 import com.OnlineCart.service.UserDetailsService;
@@ -22,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -36,12 +36,29 @@ public class HomeController {
     @Autowired
     private UserDetailsService userDetailsService;
 
+
+    @ModelAttribute
+    public void getUserDetails(Principal principal,Model model)
+    {
+        if(principal != null)
+        {
+           String email = principal.getName();
+          UserDatas userDatas = userDetailsService.getUserByEmail(email);
+
+          model.addAttribute("user",userDatas);
+        }
+
+        List<Category> getAllActiveCategories = categoryService.getAllActiveCategory();
+        model.addAttribute("categorys",getAllActiveCategories);
+
+    }
+
     @GetMapping("/")
     public String index(){
         return "index";
     }
 
-    @GetMapping("/login")
+    @GetMapping("/signin")
     public String loginPage()
     {
         return "login";
@@ -73,14 +90,14 @@ public class HomeController {
     }
 
     @PostMapping("/saveUser")
-    public String saveUser(@ModelAttribute UserDetails user,
+    public String saveUser(@ModelAttribute UserDatas user,
                            @RequestParam("img") MultipartFile file, RedirectAttributes redirectAttributes)
             throws IOException
     {
         String imageName = file.isEmpty() ? "default.jpg" : file.getOriginalFilename();
         user.setProfileImage(imageName);
 
-       UserDetails saveUser = userDetailsService.saveUser(user);
+       UserDatas saveUser = userDetailsService.saveUser(user);
 
         if(!ObjectUtils.isEmpty(saveUser))
         {
@@ -102,4 +119,6 @@ public class HomeController {
         }
         return "redirect:/register";
     }
+
+
 }

@@ -263,6 +263,32 @@ else{
     return "redirect:/admin/editProduct/" + product.getId();
 }
 
+@GetMapping("/users")
+public String getAllUsers(Model model)
+{
+   List<UserDatas> users = userDetailsService.getUsers("ROLE_USER");
+    model.addAttribute("users",users);
+   return "user_home";
+}
+
+@GetMapping("/updatestatus")
+public String updateAccountStatus(@RequestParam Boolean status,
+                                  @RequestParam Integer id,
+                                  RedirectAttributes session)
+{
+  Boolean f = userDetailsService.updateAccountStatus(id,status);
+
+   if(f)
+   {
+       session.addFlashAttribute("successMsg","Account status Update");
+   }
+   else{
+       session.addFlashAttribute("errorMsg","Something is wrong");
+   }
+
+    return "redirect:/admin/users";
+}
+
 
 
 

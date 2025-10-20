@@ -6,6 +6,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
 
+import java.util.Date;
+
 @Entity
 @Data
 public class UserDatas {
@@ -33,4 +35,12 @@ public class UserDatas {
     private String profileImage;
 
     private String role;
+
+    private Boolean isEnable;
+
+    private Boolean accountNonLocked;
+
+    private Integer failedAttempt;
+
+    private Date lockTime;
 }

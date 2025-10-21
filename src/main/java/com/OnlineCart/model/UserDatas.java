@@ -43,4 +43,6 @@ public class UserDatas {
     private Integer failedAttempt;
 
     private Date lockTime;
+
+    private String reset_token;
 }

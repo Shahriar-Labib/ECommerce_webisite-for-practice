@@ -98,4 +98,12 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 
 
     }
+
+    @Override
+    public void updateUserRestToken(String email, String resetToken) {
+       UserDatas userByEmail = userRepository.findByEmail(email);
+       userByEmail.setReset_token(resetToken);
+       userRepository.save(userByEmail);
+
+    }
 }

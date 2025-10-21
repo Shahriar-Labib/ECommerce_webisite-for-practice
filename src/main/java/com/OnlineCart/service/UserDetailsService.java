@@ -21,4 +21,6 @@ public interface UserDetailsService {
     public Boolean unlockAccountTimeExpired(UserDatas user);
 
     public void resetAttempt(int userId);
+
+    public void updateUserRestToken(String email, String resetToken);
 }

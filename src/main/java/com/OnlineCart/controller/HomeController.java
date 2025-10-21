@@ -1,11 +1,13 @@
 package com.OnlineCart.controller;
 
+import com.OnlineCart.Utils.CommonUtil;
 import com.OnlineCart.model.Category;
 import com.OnlineCart.model.Product;
 import com.OnlineCart.model.UserDatas;
 import com.OnlineCart.service.CategoryService;
 import com.OnlineCart.service.ProductService;
 import com.OnlineCart.service.UserDetailsService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
@@ -23,6 +25,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class HomeController {
@@ -119,6 +122,53 @@ public class HomeController {
         }
         return "redirect:/register";
     }
+
+    @GetMapping("/forgot-password")
+    public String showForgotPassword()
+    {
+        return "forgot_password";
+    }
+
+    @PostMapping("/forgot-password")
+    public String processForgotPassword(@RequestParam String email,
+                                        Model model,
+                                        RedirectAttributes session,
+                                        HttpServletRequest request
+                                            )
+    {
+        UserDatas user = userDetailsService.getUserByEmail(email);
+
+        if(!ObjectUtils.isEmpty(user))
+        {
+            session.addFlashAttribute("errorMsg","invalid email");
+        }
+        else{
+           String reset_token = UUID.randomUUID().toString();
+           userDetailsService.updateUserRestToken(email,reset_token);
+
+          String url = CommonUtil.generateUrl(request);
+
+           Boolean sendMail = CommonUtil.sendMail();
+
+           if(sendMail)
+           {
+               session.addFlashAttribute("successMsg","Check your email.. Password reset link is given");
+           }
+           else {
+               session.addFlashAttribute("errorMsg","Something wrong on server ! Email not send");
+           }
+
+        }
+        return "redirect:/forgot-password";
+    }
+
+    @GetMapping("/reset-password")
+    public String showResetPassword()
+    {
+        return "reset_password";
+    }
+
+
 
 
 }

@@ -23,4 +23,8 @@ public interface UserDetailsService {
     public void resetAttempt(int userId);
 
     public void updateUserRestToken(String email, String resetToken);
+
+    public UserDatas getUserByToken(String token);
+
+    public UserDatas updateUser(UserDatas user);
 }

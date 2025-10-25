@@ -7,9 +7,11 @@ import com.OnlineCart.model.UserDatas;
 import com.OnlineCart.service.CategoryService;
 import com.OnlineCart.service.ProductService;
 import com.OnlineCart.service.UserDetailsService;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,6 +41,12 @@ public class HomeController {
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private CommonUtil commonUtil;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
 
     @ModelAttribute
@@ -134,11 +143,10 @@ public class HomeController {
                                         Model model,
                                         RedirectAttributes session,
                                         HttpServletRequest request
-                                            )
-    {
+                                            ) throws MessagingException, UnsupportedEncodingException {
         UserDatas user = userDetailsService.getUserByEmail(email);
 
-        if(!ObjectUtils.isEmpty(user))
+        if(ObjectUtils.isEmpty(user))
         {
             session.addFlashAttribute("errorMsg","invalid email");
         }
@@ -146,9 +154,9 @@ public class HomeController {
            String reset_token = UUID.randomUUID().toString();
            userDetailsService.updateUserRestToken(email,reset_token);
 
-          String url = CommonUtil.generateUrl(request);
+          String url = CommonUtil.generateUrl(request) + "/reset-password?token="+reset_token;
 
-           Boolean sendMail = CommonUtil.sendMail();
+           Boolean sendMail = commonUtil.sendMail(url,email);
 
            if(sendMail)
            {
@@ -163,9 +171,39 @@ public class HomeController {
     }
 
     @GetMapping("/reset-password")
-    public String showResetPassword()
+    public String showResetPassword(@RequestParam String token,RedirectAttributes session,Model model)
     {
+
+       UserDatas userByToken = userDetailsService.getUserByToken(token);
+
+       if(ObjectUtils.isEmpty(userByToken))
+       {
+           model.addAttribute("msg","Your link is invalid or expired");
+           return "error";
+       }
+       model.addAttribute("token",token);
         return "reset_password";
+    }
+
+    @PostMapping("/reset-password")
+    public String resetPassword(@RequestParam String token,RedirectAttributes session,Model model,@RequestParam String password)
+    {
+
+        UserDatas userByToken = userDetailsService.getUserByToken(token);
+        if(ObjectUtils.isEmpty(userByToken))
+        {
+            model.addAttribute("errorMsg","Your link is invalid or expired");
+            return "error";
+        }
+        else{
+            userByToken.setPassword(passwordEncoder.encode(password));
+            userByToken.setResetToken(null);
+            userDetailsService.updateUser(userByToken);
+            session.addFlashAttribute("successMsg","Password Change Successfully");
+            model.addAttribute("msg","Password Change Successfully");
+            return "error";
+        }
+
     }
 
 

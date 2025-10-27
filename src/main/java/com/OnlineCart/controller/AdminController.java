@@ -3,6 +3,7 @@ package com.OnlineCart.controller;
 import com.OnlineCart.model.Category;
 import com.OnlineCart.model.Product;
 import com.OnlineCart.model.UserDatas;
+import com.OnlineCart.service.CartService;
 import com.OnlineCart.service.CategoryService;
 import com.OnlineCart.service.ProductService;
 import com.OnlineCart.service.UserDetailsService;
@@ -38,6 +39,9 @@ public class AdminController {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private CartService cartService;
+
     @ModelAttribute
     public void getUserDetails(Principal principal, Model model)
     {
@@ -47,6 +51,9 @@ public class AdminController {
             UserDatas userDatas = userDetailsService.getUserByEmail(email);
 
             model.addAttribute("user",userDatas);
+
+            Integer countCart = cartService.getCountCart(userDatas.getId());
+            model.addAttribute("countCart",countCart);
         }
 
         List<Category> getAllActiveCategories = categoryService.getAllActiveCategory();

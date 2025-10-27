@@ -41,6 +41,9 @@ public class UserController {
             UserDatas userDatas = userDetailsService.getUserByEmail(email);
 
             model.addAttribute("user",userDatas);
+
+            Integer countCart = cartService.getCountCart(userDatas.getId());
+            model.addAttribute("countCart",countCart);
         }
         List<Category> getAllActiveCategories = categoryService.getAllActiveCategory();
         model.addAttribute("categorys",getAllActiveCategories);
@@ -64,5 +67,33 @@ public class UserController {
             session.addFlashAttribute("successMsg", "Product added to cart");
         }
         return "redirect:/product/" + pid;
+    }
+
+    @GetMapping("/cart")
+    public String loadCartPage(Principal p,Model model)
+    {
+        UserDatas user = getLoggedInUserDetails(p);
+       List<Cart> carts = cartService.getCartsByUser(user.getId());
+       model.addAttribute("carts",carts);
+       if(carts.size() > 0)
+       {
+           model.addAttribute("totalOrderPrice",carts.get(carts.size()-1).getTotalOrderAmountPrice());
+       }
+
+       return "cart";
+    }
+
+    private UserDatas getLoggedInUserDetails(Principal p) {
+
+        String email = p.getName();
+        UserDatas userDatas = userDetailsService.getUserByEmail(email);
+        return userDatas;
+    }
+
+    @GetMapping("/cartQuantityUpdate")
+    public String updateCartQuantity(@RequestParam String sy,@RequestParam Integer cid)
+    {
+        cartService.updateQuantity(sy,cid);
+        return "redirect:/user/cart";
     }
 }

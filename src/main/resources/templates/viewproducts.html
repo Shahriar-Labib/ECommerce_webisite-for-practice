@@ -53,6 +53,22 @@
                 <div class="card shadow-lg border-0 rounded-3 p-4">
                     <div class="row align-items-center g-4">
 
+                        <th:block th:if="${successMsg}">
+                            <p class="text-success alert alert-success text-cente">
+                                [[${successMsg}]]
+                            </p>
+                            <!-- Fix: Call removeSessionMessage() as a method -->
+                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                        </th:block>
+
+                        <th:block th:if="${errorMsg}">
+                            <p class="text-danger text-center  alert alert-danger">
+                                [[${errorMsg}]]
+                            </p>
+                            <!-- Fix: Call removeSessionMessage() as a method -->
+                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                        </th:block>
+
                         <!-- Product Image -->
                         <div class="col-md-5 text-center">
                             <img th:src="@{/img/category_img/laptop.jpg}"
@@ -113,7 +129,16 @@
 
 
                             <th:block th:if="${product.stock > 0}">
-                                <a class="btn btn-danger btn-lg col-md-12">Add To Cart</a>
+                                <th:block th:if="${user==null}">
+                                    <a href="/signin" class="btn btn-danger col-md-12">Add To
+                                        Cart</a>
+                                </th:block>
+
+                                <th:block th:unless="${user==null}">
+                                    <a
+                                            th:href="@{'/user/addCart?pid='+${product.id}+'&uid='+${user.id}}"
+                                            class="btn btn-danger col-md-12">Add To Cart</a>
+                                </th:block>
                             </th:block>
 
                             <th:block th:if="${product.stock <= 0}">

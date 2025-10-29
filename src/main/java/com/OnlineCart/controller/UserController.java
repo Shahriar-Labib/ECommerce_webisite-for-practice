@@ -2,18 +2,17 @@ package com.OnlineCart.controller;
 
 import com.OnlineCart.model.Cart;
 import com.OnlineCart.model.Category;
+import com.OnlineCart.model.OrderRequset;
 import com.OnlineCart.model.UserDatas;
 import com.OnlineCart.service.CartService;
 import com.OnlineCart.service.CategoryService;
+import com.OnlineCart.service.OrderService;
 import com.OnlineCart.service.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
@@ -31,6 +30,9 @@ public class UserController {
 
     @Autowired
     private CartService cartService;
+
+    @Autowired
+    private OrderService orderService;
 
     @ModelAttribute
     public void getUserDetails(Principal principal, Model model)
@@ -95,5 +97,21 @@ public class UserController {
     {
         cartService.updateQuantity(sy,cid);
         return "redirect:/user/cart";
+    }
+
+    @GetMapping("/orders")
+    public String orderPage()
+    {
+        return "order";
+    }
+
+    @PostMapping("/save-order")
+    public String saveOrder(@ModelAttribute OrderRequset requset,Principal p)
+    {
+       // System.out.println(requset);
+
+        UserDatas user = getLoggedInUserDetails(p);
+        orderService.saveOrder(user.getId(), requset);
+        return "success";
     }
 }

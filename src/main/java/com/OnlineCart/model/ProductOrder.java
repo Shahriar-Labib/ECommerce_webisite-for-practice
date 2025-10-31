@@ -3,6 +3,7 @@ package com.OnlineCart.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -15,7 +16,7 @@ public class ProductOrder {
 
     private String orderId;
 
-    private Date orderDate;
+    private LocalDate orderDate;
 
     @ManyToOne
     private Product product;

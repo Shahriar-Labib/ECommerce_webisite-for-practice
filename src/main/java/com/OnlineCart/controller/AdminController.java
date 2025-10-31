@@ -2,11 +2,9 @@ package com.OnlineCart.controller;
 
 import com.OnlineCart.model.Category;
 import com.OnlineCart.model.Product;
+import com.OnlineCart.model.ProductOrder;
 import com.OnlineCart.model.UserDatas;
-import com.OnlineCart.service.CartService;
-import com.OnlineCart.service.CategoryService;
-import com.OnlineCart.service.ProductService;
-import com.OnlineCart.service.UserDetailsService;
+import com.OnlineCart.service.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -41,6 +39,9 @@ public class AdminController {
 
     @Autowired
     private CartService cartService;
+
+    @Autowired
+    private OrderService orderService;
 
     @ModelAttribute
     public void getUserDetails(Principal principal, Model model)
@@ -295,6 +296,14 @@ public String updateAccountStatus(@RequestParam Boolean status,
 
     return "redirect:/admin/users";
 }
+
+    @GetMapping("/orders")
+    public String getAllOrders(Model model)
+    {
+        List<ProductOrder> allOrders = orderService.getAllOrders();
+        model.addAttribute("orders",allOrders);
+        return "admin_order";
+    }
 
 
 

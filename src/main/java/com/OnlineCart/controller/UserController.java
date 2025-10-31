@@ -1,9 +1,7 @@
 package com.OnlineCart.controller;
 
-import com.OnlineCart.model.Cart;
-import com.OnlineCart.model.Category;
-import com.OnlineCart.model.OrderRequset;
-import com.OnlineCart.model.UserDatas;
+import com.OnlineCart.Utils.OrderStatus;
+import com.OnlineCart.model.*;
 import com.OnlineCart.service.CartService;
 import com.OnlineCart.service.CategoryService;
 import com.OnlineCart.service.OrderService;
@@ -100,8 +98,18 @@ public class UserController {
     }
 
     @GetMapping("/orders")
-    public String orderPage()
+    public String orderPage(Principal p,Model model)
     {
+        UserDatas user = getLoggedInUserDetails(p);
+        List<Cart> carts = cartService.getCartsByUser(user.getId());
+        model.addAttribute("carts",carts);
+        if(carts.size() > 0)
+        {
+            Double totalOrderPrice = carts.get(carts.size()-1).getTotalOrderAmountPrice()+250+100;
+            Double orderPrice = carts.get(carts.size()-1).getTotalOrderAmountPrice();
+            model.addAttribute("totalOrderPrice",totalOrderPrice);
+            model.addAttribute("orderPrice",orderPrice);
+        }
         return "order";
     }
 
@@ -112,6 +120,46 @@ public class UserController {
 
         UserDatas user = getLoggedInUserDetails(p);
         orderService.saveOrder(user.getId(), requset);
+        return "redirect:/user/success";
+    }
+
+    @GetMapping("/success")
+    public String loadSuccess()
+    {
         return "success";
     }
+
+    @GetMapping("/user-orders")
+    public String myOrder(Model model,Principal p)
+    {
+        UserDatas loginUser = getLoggedInUserDetails(p);
+        List<ProductOrder> orders = orderService.getOrdersByUser(loginUser.getId());
+        model.addAttribute("orders", orders);
+        return "my_order";
+    }
+
+    @GetMapping("/update-status")
+    public String updateOrderStatus(@RequestParam Integer id,@RequestParam Integer st,RedirectAttributes session)
+    {
+
+        OrderStatus[] values = OrderStatus.values();
+        String status = null;
+
+        for (OrderStatus orderSt : values) {
+            if (orderSt.getId().equals(st)) {
+                status = orderSt.getName();
+            }
+        }
+
+        Boolean updateOrder = orderService.updateOrderStatus(id, status);
+
+        if (updateOrder) {
+            session.addFlashAttribute("successMsg", "Status Updated");
+        } else {
+            session.addFlashAttribute("errorMsg", "status not updated");
+        }
+        return "redirect:/user/user-orders";
+    }
+
+
 }

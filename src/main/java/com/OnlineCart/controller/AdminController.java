@@ -1,5 +1,6 @@
 package com.OnlineCart.controller;
 
+import com.OnlineCart.Utils.OrderStatus;
 import com.OnlineCart.model.Category;
 import com.OnlineCart.model.Product;
 import com.OnlineCart.model.ProductOrder;
@@ -303,6 +304,29 @@ public String updateAccountStatus(@RequestParam Boolean status,
         List<ProductOrder> allOrders = orderService.getAllOrders();
         model.addAttribute("orders",allOrders);
         return "admin_order";
+    }
+
+    @PostMapping("/update-order-status")
+    public String updateOrderStatus(@RequestParam Integer id,@RequestParam Integer st,RedirectAttributes session)
+    {
+
+        OrderStatus[] values = OrderStatus.values();
+        String status = null;
+
+        for (OrderStatus orderSt : values) {
+            if (orderSt.getId().equals(st)) {
+                status = orderSt.getName();
+            }
+        }
+
+        Boolean updateOrder = orderService.updateOrderStatus(id, status);
+
+        if (updateOrder) {
+            session.addFlashAttribute("successMsg", "Status Updated");
+        } else {
+            session.addFlashAttribute("errorMsg", "status not updated");
+        }
+        return "redirect:/admin/orders";
     }
 
 

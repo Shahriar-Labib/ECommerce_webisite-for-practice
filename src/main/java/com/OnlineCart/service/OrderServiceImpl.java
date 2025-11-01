@@ -1,5 +1,6 @@
 package com.OnlineCart.service;
 
+import com.OnlineCart.Utils.CommonUtil;
 import com.OnlineCart.Utils.OrderStatus;
 import com.OnlineCart.model.Cart;
 import com.OnlineCart.model.OrderAddress;
@@ -25,8 +26,11 @@ public class OrderServiceImpl implements OrderService{
     @Autowired
     private CartRepository cartRepository;
 
+    @Autowired
+    private CommonUtil commonUtil;
+
     @Override
-    public void saveOrder(Integer userId, OrderRequset orderRequset) {
+    public void saveOrder(Integer userId, OrderRequset orderRequset) throws Exception {
 
        List<Cart> carts = cartRepository.findByUserId(userId);
 
@@ -55,7 +59,8 @@ public class OrderServiceImpl implements OrderService{
 
            order.setOrderAddress(address);
 
-           productOrderRepository.save(order);
+           ProductOrder saveOrder = productOrderRepository.save(order);
+           commonUtil.sendMailForProductOrder(saveOrder, "success");
        }
 
 
@@ -68,15 +73,15 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public Boolean updateOrderStatus(Integer id, String status) {
+    public ProductOrder updateOrderStatus(Integer id, String status) {
         Optional<ProductOrder> findById = productOrderRepository.findById(id);
         if (findById.isPresent()) {
             ProductOrder productOrder = findById.get();
             productOrder.setStatus(status);
-            productOrderRepository.save(productOrder);
-            return true;
+            ProductOrder updateOrder = productOrderRepository.save(productOrder);
+            return updateOrder;
         }
-        return false;
+        return null;
     }
 
     @Override

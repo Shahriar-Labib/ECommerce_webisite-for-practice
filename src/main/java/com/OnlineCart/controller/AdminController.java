@@ -1,5 +1,6 @@
 package com.OnlineCart.controller;
 
+import com.OnlineCart.Utils.CommonUtil;
 import com.OnlineCart.Utils.OrderStatus;
 import com.OnlineCart.model.Category;
 import com.OnlineCart.model.Product;
@@ -43,6 +44,9 @@ public class AdminController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private CommonUtil commonUtil;
 
     @ModelAttribute
     public void getUserDetails(Principal principal, Model model)
@@ -319,9 +323,15 @@ public String updateAccountStatus(@RequestParam Boolean status,
             }
         }
 
-        Boolean updateOrder = orderService.updateOrderStatus(id, status);
+        ProductOrder updateOrder = orderService.updateOrderStatus(id, status);
 
-        if (updateOrder) {
+        try {
+            commonUtil.sendMailForProductOrder(updateOrder, status);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (!ObjectUtils.isEmpty(updateOrder)) {
             session.addFlashAttribute("successMsg", "Status Updated");
         } else {
             session.addFlashAttribute("errorMsg", "status not updated");
